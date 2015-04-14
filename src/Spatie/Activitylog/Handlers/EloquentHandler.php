@@ -18,11 +18,15 @@ class EloquentHandler implements ActivitylogHandlerInterface
      */
     public function log($text, $userId = '', $attributes = [])
     {
+        $applicationRepository = app('App\Repositories\Application\ApplicationRepository');
+        $application = $applicationRepository->authorized();
+
         Activity::create(
             [
                 'text'       => $text,
                 'user_id'    => ($userId == '' ? null : $userId),
                 'ip_address' => $attributes['ipAddress'],
+                'application_id' => $application ? $application->getKey() : null,
             ]
         );
 
